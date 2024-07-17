@@ -1,8 +1,8 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
+import userRoutes from './userRoutes';
+
 const router = Router();
 
-router.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!');
-});
+router.use(userRoutes);
 
 export default router;
