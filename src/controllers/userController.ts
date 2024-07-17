@@ -24,3 +24,24 @@ export const createUser = (req: Request, res: Response): void => {
   userService.createUser(newUser);
   res.status(201).json(newUser);
 };
+
+export const updateUser = (req: Request, res: Response): void => {
+  const id = parseInt(req.params.id, 10);
+  const updatedUser: Partial<User> = req.body;
+  const user = userService.updateUser(id, updatedUser);
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(404).send('User not found');
+  }
+};
+
+export const deleteUser = (req: Request, res: Response): void => {
+  const id = parseInt(req.params.id, 10);
+  const success = userService.deleteUser(id);
+  if (success) {
+    res.status(204).send();
+  } else {
+    res.status(404).send('User not found');
+  }
+};
