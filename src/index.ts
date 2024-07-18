@@ -1,25 +1,12 @@
 import express from 'express';
-import routes from './routes';
-import dotenv from 'dotenv';
-import cors from 'cors';
-
-dotenv.config();  // Cargar las variables de entorno desde el archivo .env
+import eventRoutes from './routes/eventRoutes';
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
-app.use(cors({
-  origin: 'http://localhost:3000', // La URL del frontend
-  credentials: true
-}));
 app.use(express.json());
-app.use('/', routes);
+app.use('/api', eventRoutes);
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
 });
-
-
-
-
-
