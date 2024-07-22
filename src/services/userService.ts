@@ -2,9 +2,9 @@ import { User } from '../models/userModel';
 
 export class UserService {
   private users: User[] = [
-    { id: 1, name: 'Alice', email: 'alice@example.com' },
-    { id: 2, name: 'Bob', email: 'bob@example.com' },
-    { id: 3, name: 'Charlie', email: 'charlie@example.com' },
+    { id: 1, username: 'Alice', email: 'alice@example.com', password: 'password123' },
+    { id: 2, username: 'Bob', email: 'bob@example.com', password: 'password123' },
+    { id: 3, username: 'Charlie', email: 'charlie@example.com', password: 'password123' },
   ];
 
   getAllUsers(): User[] {
@@ -35,5 +35,9 @@ export class UserService {
       return true;
     }
     return false;
+  }
+
+  findUserByEmail(email: string): User | undefined {
+    return this.users.find(user => user.email === email);
   }
 }

@@ -1,40 +1,56 @@
 import { Request, Response } from 'express';
-import User from '../models/userModel';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import { UserService } from '../services/userService';
 
-const register = async (req: Request, res: Response) => {
-  const { username, email, password } = req.body;
+const userService = new UserService();
 
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ username, email, password: hashedPassword });
-    await user.save();
-    res.status(201).json({ message: 'User registered successfully' });
-  } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+export const getAllUsers = (req: Request, res: Response) => {
+  const users = userService.getAllUsers();
+  res.json(users);
+};
+
+export const getUserById = (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  const user = userService.getUserById(id);
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(404).send('User not found');
   }
 };
 
-const login = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+export const createUser = (req: Request, res: Response) => {
+  const newUser = req.body;
+  userService.createUser(newUser);
+  res.status(201).json(newUser);
+};
 
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ error: 'Invalid email or password' });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(400).json({ error: 'Invalid email or password' });
-    }
-
-    const token = jwt.sign({ userId: user._id }, 'secret_key', { expiresIn: '1h' });
-    res.status(200).json({ token });
-  } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+export const updateUser = (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  const updatedUser = req.body;
+  const user = userService.updateUser(id, updatedUser);
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(404).send('User not found');
   }
 };
 
-export { register, login };
+export const deleteUser = (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  const success = userService.deleteUser(id);
+  if (success) {
+    res.status(204).send();
+  } else {
+    res.status(404).send('User not found');
+  }
+};
+
+export const findUserByEmail = (req: Request, res: Response) => {
+  const email = req.params.email;
+  const user = userService.findUserByEmail(email);
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(404).send('User not found');
+  }
+};
